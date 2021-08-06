@@ -63,4 +63,9 @@ dbutils.fs.ls("/mnt/")
 
 # COMMAND ----------
 
+dbutils.fs.unmount("/mnt/pkformula1dl/gold")
+dbutils.fs.unmount("/mnt/pkformula1dl/processed")
+
+# COMMAND ----------
+
 
