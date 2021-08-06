@@ -1,8 +1,45 @@
 # Databricks notebook source
+#Unmount
+#dbutils.fs.unmount("/mnt/pkformula1dl/raw")
+#dbutils.fs.unmount("/mnt/pkformula1dl/processed")
+#dbutils.fs.unmount("/mnt/pkformula1dl/gold")
+
+
+# COMMAND ----------
+
+dbutils.secrets.help()
+
+
+# COMMAND ----------
+
+dbutils.secrets.listScopes()
+
+
+# COMMAND ----------
+
+dbutils.secrets.list("formula1-scope")
+
+# COMMAND ----------
+
+dbutils.secrets.get(scope="formula1-scope", key = "databricks-app-client-id")
+
+# COMMAND ----------
+
+##But if we want we can print the values 
+for x in dbutils.secrets.get(scope="formula1-scope", key = "databricks-app-client-id"):
+  print (x)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC Above only restricts the accidential exposing of values to the public. It will not restriect those people who has the access to the Databricks workspace itself . for that we need to do aditioanl set up.
+
+# COMMAND ----------
+
 storage_account_name = "pkformula1dl"
-client_id = "9c9f70f1-5a19-4b30-bdc0-792478630f89" # This is not good use secrets(batabricks backed secrent scope ) or azure keyvault Secret Scope
-tenant_id = "cce4b829-1804-453a-85f4-5abeacc01292"
-client_secret = "JYZtJ-LeQSa.Ti~60~07nBfOwJ3_99-wJ9"
+client_id = dbutils.secrets.get(scope="formula1-scope", key = "databricks-app-client-id") # This is not good use secrets(batabricks backed secrent scope ) or azure keyvault Secret Scope
+tenant_id = dbutils.secrets.get(scope="formula1-scope", key = "databricks-app-tenant-id")
+client_secret = dbutils.secrets.get(scope="formula1-scope", key = "databricks-aap-client-secret")
 
 # COMMAND ----------
 
@@ -14,30 +51,6 @@ configs = {"fs.azure.account.auth.type": "OAuth",
   
  
 }
-
-# COMMAND ----------
-
-container_name = "raw"
-dbutils.fs.mount(
-  source = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
-  mount_point = f"/mnt/{storage_account_name}/{container_name}",
-  extra_configs=configs)
-
-# COMMAND ----------
-
-dbutils.fs.ls('/mnt/pkformula1dl/')
-
-# COMMAND ----------
-
-dbutils.fs.mounts()
-
-# COMMAND ----------
-
-container_name = "processed"
-dbutils.fs.mount(
-  source = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
-  mount_point = f"/mnt/{storage_account_name}/{container_name}",
-  extra_configs=configs)
 
 # COMMAND ----------
 
@@ -54,17 +67,20 @@ def mount_adls(container_name):
 
 # COMMAND ----------
 
+mount_adls("raw")
+
+# COMMAND ----------
+
+mount_adls("processed")
+
+# COMMAND ----------
+
 #use above function to mount the gold container 
 mount_adls("gold")
 
 # COMMAND ----------
 
 dbutils.fs.ls("/mnt/")
-
-# COMMAND ----------
-
-dbutils.fs.unmount("/mnt/pkformula1dl/gold")
-dbutils.fs.unmount("/mnt/pkformula1dl/processed")
 
 # COMMAND ----------
 
