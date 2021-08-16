@@ -33,7 +33,7 @@ constructor_dropped_df = constructor_df.drop(constructor_df['url'])
 
 # COMMAND ----------
 
-constructor_dropped_df = constructor_df.drop('url')
+constructor_dropped_df = constructor_df.drop('url') 
 
 # COMMAND ----------
 
