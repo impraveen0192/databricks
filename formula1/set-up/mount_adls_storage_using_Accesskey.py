@@ -12,16 +12,16 @@ dbutils.secrets.help()
 
 # COMMAND ----------
 
-x = dbutils.secrets.listScopes()
+dbutils.secrets.listScopes()
 
 # COMMAND ----------
 
-dbutils.secrets.list("formula1-databricks-secret-scope")
-dbutils.secrets.listScopes
+dbutils.secrets.list("databricks-storageaccount-accesskey")
+#dbutils.secrets.listScopes
 
 # COMMAND ----------
 
-dbutils.secrets.get(scope="formula1-databricks-secret-scope", key = "databricks-app-client-id")
+dbutils.secrets.get(scope="databricks-storageaccount-accesskey", key = "storageaccountkey")
 
 # COMMAND ----------
 
@@ -81,6 +81,20 @@ mount_adls("processed")
 # COMMAND ----------
 
 dbutils.fs.ls("/mnt/")
+
+# COMMAND ----------
+
+container_name = "raw"
+
+dbutils.fs.mount(
+source = f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net",
+mount_point = "/mnt/sapkformula1dl/raw",
+extra_configs = 
+  {"fs.azure.account.key.sapkformula1dl.blob.core.windows.net":dbutils.secrets.get(scope = "databricks-storageaccount-accesskey", key = "storageaccountkey")})
+
+# COMMAND ----------
+
+dbutils.fs.unmount("/mnt/sapkformula1dl/raw")
 
 # COMMAND ----------
 

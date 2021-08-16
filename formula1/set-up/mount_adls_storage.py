@@ -1,8 +1,8 @@
 # Databricks notebook source
-storage_account_name = "pkformula1dl"
-client_id = "9c9f70f1-5a19-4b30-bdc0-792478630f89" # This is not good use secrets(batabricks backed secrent scope ) or azure keyvault Secret Scope
-tenant_id = "cce4b829-1804-453a-85f4-5abeacc01292"
-client_secret = "JYZtJ-LeQSa.Ti~60~07nBfOwJ3_99-wJ9"
+storage_account_name = "sapkformula1dl"
+client_id = "8b6cbc4f-7b09-49df-b25f-baecdd318ae0" # This is not good use secrets(batabricks backed secrent scope ) or azure keyvault Secret Scope
+tenant_id = "595336d3-2ae8-4525-81d5-713d46ae53d6"
+client_secret = "~D00y7lg5Wz3Zu82b~_BEJ0.8Sw2W7FKaJ"
 
 # COMMAND ----------
 
@@ -25,7 +25,7 @@ dbutils.fs.mount(
 
 # COMMAND ----------
 
-dbutils.fs.ls('/mnt/pkformula1dl/')
+dbutils.fs.ls('/mnt/sapkformula1dl/')
 
 # COMMAND ----------
 
@@ -60,6 +60,10 @@ mount_adls("gold")
 # COMMAND ----------
 
 dbutils.fs.ls("/mnt/")
+
+# COMMAND ----------
+
+dbutils.fs.unmount("/mnt/sapkformula1dl/raw")
 
 # COMMAND ----------
 
