@@ -4,6 +4,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType,StructField,IntegerType,StringType,DoubleType,FloatType
 
 # COMMAND ----------
@@ -39,7 +47,7 @@ results_schema = StructType ( fields = [
 
 # COMMAND ----------
 
-results_df = spark.read.schema(results_schema).json("/mnt/sapkformula1dl/raw/results.json")
+results_df = spark.read.schema(results_schema).json(f"{raw_folder_path}/results.json")
 
 # COMMAND ----------
 
@@ -61,7 +69,6 @@ results_renamed_df = results_df.withColumnRenamed("resultId", "result_id")\
 .withColumnRenamed("fastestLap","fastest_lap")\
 .withColumnRenamed("fastestLapTime","fastest_lap_time")\
 .withColumnRenamed("fastestLapSpeed","fastest_lap_speed")\
-.withColumn("ingestion_date",current_timestamp())\
 .drop("statusId")
 
 # COMMAND ----------
@@ -71,19 +78,32 @@ display(results_renamed_df)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### Step 3 write the dataframe to processed folder
+# MAGIC ##### Step 4 Add Ingestion Date
 
 # COMMAND ----------
 
-results_renamed_df.write.mode("overwrite").partitionBy("race_id").parquet("/mnt/sapkformula1dl/processed/results")
+results_ingestion_date_df = add_ingestion_date(results_renamed_df)
 
 # COMMAND ----------
 
-results_renamed_df.count()
+display(results_ingestion_date_df)
 
 # COMMAND ----------
 
-spark.read.parquet("/mnt/sapkformula1dl/processed/results").count()
+# MAGIC %md
+# MAGIC ##### Step 4 write the dataframe to processed folder
+
+# COMMAND ----------
+
+results_ingestion_date_df.write.mode("overwrite").partitionBy("race_id").parquet(f"{processed_folder_path}/results")
+
+# COMMAND ----------
+
+results_ingestion_date_df.count()
+
+# COMMAND ----------
+
+spark.read.parquet(f"{processed_folder_path}/results").count()
 
 # COMMAND ----------
 

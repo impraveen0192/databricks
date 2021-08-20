@@ -4,6 +4,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ##### Step 1- Read the CSV file using the spark dataframe reader API
 
@@ -37,7 +45,7 @@ races_schema = StructType(fields = [
 
 # COMMAND ----------
 
-races_df = spark.read.option("header",True).schema(races_schema).csv("/mnt/sapkformula1dl/raw/races.csv")
+races_df = spark.read.option("header",True).schema(races_schema).csv(f"{raw_folder_path}/races.csv")
 
 # COMMAND ----------
 
@@ -54,8 +62,11 @@ from pyspark.sql.functions import current_timestamp, to_timestamp,concat,col,lit
 
 # COMMAND ----------
 
-races_with_timestamp_df = races_df.withColumn("ingestion_date", current_timestamp()) \
-                                    .withColumn("race_timestamp",to_timestamp(concat(col('date'),lit(' '),col('time')), 'yyy-MM-dd HH:mm:ss'))
+races_with_ingestion_timestamp_df = add_ingestion_date(races_df)
+
+# COMMAND ----------
+
+races_with_timestamp_df = races_with_ingestion_timestamp_df.withColumn("race_timestamp",to_timestamp(concat(col('date'),lit(' '),col('time')), 'yyy-MM-dd HH:mm:ss'))
 
 # COMMAND ----------
 
@@ -85,7 +96,7 @@ display(races_selected_df)
 
 # COMMAND ----------
 
-races_selected_df.write.mode('overwrite').partitionBy("race_year").parquet('/mnt/sapkformula1dl/processed/races')
+races_selected_df.write.mode('overwrite').partitionBy("race_year").parquet(f'{processed_folder_path}/races')
 
 # COMMAND ----------
 
@@ -94,7 +105,7 @@ races_selected_df.write.mode('overwrite').partitionBy("race_year").parquet('/mnt
 
 # COMMAND ----------
 
-display(spark.read.parquet("/mnt/sapkformula1dl/processed/races"))
+display(spark.read.parquet(f"{processed_folder_path}/races"))
 
 # COMMAND ----------
 

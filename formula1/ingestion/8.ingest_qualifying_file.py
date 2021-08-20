@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ##### Step - 1 Read qualifying json file using dataframe API
 
@@ -26,7 +34,7 @@ qualifying_schema = StructType ( fields = [
 
 qualifying_df = spark.read.schema(qualifying_schema)\
 .option("multiLine",True)\
-.json("/mnt/sapkformula1dl/raw/qualifying/")
+.json(f"{raw_folder_path}/qualifying/")
 
 # COMMAND ----------
 
@@ -43,20 +51,28 @@ from pyspark.sql.functions import current_timestamp
 
 # COMMAND ----------
 
-final_df = qualifying_df.withColumnRenamed("qualifyingId","qualifying_id")\
+final_rename_df = qualifying_df.withColumnRenamed("qualifyingId","qualifying_id")\
 .withColumnRenamed("raceId","race_id")\
 .withColumnRenamed("driverId","driver_id")\
-.withColumnRenamed("constructorId","constructor_id")\
-.withColumn("Ingestion_date",current_timestamp())
+.withColumnRenamed("constructorId","constructor_id")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### Step - 3  Write the parquet file to processed container
+# MAGIC ##### Step - 3  Add Ingestion Date
 
 # COMMAND ----------
 
-final_df.write.mode("overwrite").parquet("/mnt/sapkformula1dl/processed/qualifying")
+final_df = add_ingestion_date(final_rename_df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Step - 4  Write the parquet file to processed container
+
+# COMMAND ----------
+
+final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/qualifying")
 
 # COMMAND ----------
 
