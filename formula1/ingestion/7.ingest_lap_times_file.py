@@ -1,4 +1,12 @@
 # Databricks notebook source
+# MAGIC %run "../includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ##### Step - 1 Read lap_times file using dataframe API
 
@@ -22,7 +30,7 @@ lap_times_schema = StructType ( fields = [
 # COMMAND ----------
 
 lap_times_df = spark.read.schema(lap_times_schema)\
-.csv("/mnt/sapkformula1dl/raw/lap_times/")
+.csv(f"{raw_folder_path}/lap_times/")
 
 # COMMAND ----------
 
@@ -35,9 +43,13 @@ from pyspark.sql.functions import current_timestamp
 
 # COMMAND ----------
 
-final_df = lap_times_df.withColumnRenamed("driverId","driver_id")\
+final_renamed_df = lap_times_df.withColumnRenamed("driverId","driver_id")\
 .withColumnRenamed("raceId","race_id")\
 .withColumn("Ingestion_date",current_timestamp())
+
+# COMMAND ----------
+
+final_df = add_ingestion_date(final_renamed_df)
 
 # COMMAND ----------
 
@@ -46,7 +58,7 @@ final_df = lap_times_df.withColumnRenamed("driverId","driver_id")\
 
 # COMMAND ----------
 
-final_df.write.mode("overwrite").parquet("/mnt/sapkformula1dl/processed/lap_times")
+final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/lap_times")
 
 # COMMAND ----------
 
