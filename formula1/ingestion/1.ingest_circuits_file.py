@@ -133,4 +133,8 @@ circuits_final_df.write.mode("overwrite").parquet("/mnt/sapkformula1dl/processed
 
 # COMMAND ----------
 
+display(spark.read.parquet("/mnt/sapkformula1dl/gold/circuits"))
+
+# COMMAND ----------
+
 
