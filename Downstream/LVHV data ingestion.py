@@ -8,7 +8,8 @@
 
 # COMMAND ----------
 
-display(spark.read.csv(f"{raw_folder_path}/circuits*"))
+df = spark.read.csv(f"{raw_folder_path}/circuits*")
+Test = 10
 
 # COMMAND ----------
 
