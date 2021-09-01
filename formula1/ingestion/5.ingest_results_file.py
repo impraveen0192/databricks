@@ -107,4 +107,4 @@ spark.read.parquet(f"{processed_folder_path}/results").count()
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

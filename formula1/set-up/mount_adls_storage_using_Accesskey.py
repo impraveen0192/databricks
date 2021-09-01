@@ -7,6 +7,10 @@
 
 # COMMAND ----------
 
+storage_account_name = "pkmlops" # Update the sturage account name
+
+# COMMAND ----------
+
 dbutils.secrets.help()
 
 
@@ -16,12 +20,12 @@ dbutils.secrets.listScopes()
 
 # COMMAND ----------
 
-dbutils.secrets.list("Testscope")
+dbutils.secrets.list("databricks-storageaccount-accesskey")
 #dbutils.secrets.listScopes
 
 # COMMAND ----------
 
-dbutils.secrets.get(scope="databricks-storageaccount-accesskey", key = "storageaccountkey")
+dbutils.secrets.get(scope="Secret-scope-pkmlops", key = "pkmlops-access-key")
 
 # COMMAND ----------
 
@@ -36,7 +40,7 @@ for x in dbutils.secrets.get(scope="formula1-databricks-secret-scope", key = "da
 
 # COMMAND ----------
 
-storage_account_name = "sapkformula1dl" # Update the sturage account name
+
 client_id = dbutils.secrets.get(scope="formula1-databricks-secret-scope", key = "databricks-app-client-id") # This is not good use secrets(batabricks backed secrent scope ) or azure keyvault Secret Scope
 tenant_id = dbutils.secrets.get(scope="formula1-databricks-secret-scope", key = "databricks-app-tenant-id")
 client_secret = dbutils.secrets.get(scope="formula1-databricks-secret-scope", key = "databricks-aap-client-secret")
@@ -84,13 +88,15 @@ dbutils.fs.ls("/mnt/")
 
 # COMMAND ----------
 
-container_name = "raw"
-
+container_name = "bronze"
+storage_account_name= "staedwsbxcurtest"
+storage_account_name
 dbutils.fs.mount(
-source = f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net",
-mount_point = "/mnt/sapkformula1dl/raw",
-extra_configs = 
-  {"fs.azure.account.key.sapkformula1dl.blob.core.windows.net":dbutils.secrets.get(scope = "databricks-storageaccount-accesskey", key = "storageaccountkey")})
+    source = f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net",
+    mount_point = f"/mnt/{storage_account_name}/{container_name}",
+    extra_configs = 
+    {f"fs.azure.account.key.{storage_account_name}.blob.core.windows.net":dbutils.secrets.get(scope = scope_name, key = scope_key)})
+print(f"{storage_account_name}/{container_name} mounted")
 
 # COMMAND ----------
 

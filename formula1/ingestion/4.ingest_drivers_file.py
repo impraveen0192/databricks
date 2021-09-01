@@ -103,4 +103,4 @@ drivers_final_df = drivers_with_columns_df.drop("url")
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

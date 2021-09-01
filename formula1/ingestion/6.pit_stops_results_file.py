@@ -73,4 +73,4 @@ final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/pt_stops")
 
 # COMMAND ----------
 
-
+dbutils.notebook.exit("Success")

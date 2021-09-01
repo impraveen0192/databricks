@@ -67,11 +67,7 @@ def mount_adls(container_name):
 
 # COMMAND ----------
 
-mount_adls("raw")
-
-# COMMAND ----------
-
-mount_adls("processed")
+mount_adls("presentation")
 
 # COMMAND ----------
 
@@ -80,7 +76,7 @@ mount_adls("processed")
 
 # COMMAND ----------
 
-dbutils.fs.ls("/mnt/")
+dbutils.fs.ls(f"/mnt/{storage_account_name}")
 
 # COMMAND ----------
 
