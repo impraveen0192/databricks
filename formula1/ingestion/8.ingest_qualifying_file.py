@@ -76,4 +76,8 @@ final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/qualifying")
 
 # COMMAND ----------
 
+dbutils.notebook.exit("Success")
 
+# COMMAND ----------
+
+final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/qualifying_delta")

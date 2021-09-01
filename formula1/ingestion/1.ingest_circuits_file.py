@@ -4,6 +4,16 @@
 
 # COMMAND ----------
 
+dbutils.widgets.help()
+
+# COMMAND ----------
+
+dbutils.widgets.text("p_data_source","")
+v_data_source = dbutils.widgets.get("p_data_source")
+v_data_source
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/configuration"
 
 # COMMAND ----------
@@ -107,11 +117,20 @@ display(circuits_selected_df)
 
 # COMMAND ----------
 
+from pyspark.sql.functions import lit
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
 circuits_renamed_df=circuits_selected_df.withColumnRenamed("circuitId","circuit_id") \
 .withColumnRenamed("circuitRef","circuit_ref") \
 .withColumnRenamed("lat","latitude") \
 .withColumnRenamed("lng","longitude") \
-.withColumnRenamed("alt","altitude") 
+.withColumnRenamed("alt","altitude") \
+.withColumn("data_source",lit(v_data_source))
 
 # COMMAND ----------
 
@@ -145,4 +164,14 @@ display(spark.read.parquet(f"{processed_folder_path}/circuits"))
 
 # COMMAND ----------
 
+dbutils.notebook.exit("Success")
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC #####Get the current path and name of notebook
+
+# COMMAND ----------
+
+dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
 
